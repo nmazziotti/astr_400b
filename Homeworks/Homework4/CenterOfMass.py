@@ -71,7 +71,7 @@ class CenterOfMass:
         return a_com, b_com, c_com
     
     
-    def COM_P(self, delta):
+    def COM_P(self, delta=0.1):
         '''Method to compute the position of the center of mass of the galaxy 
         using the shrinking-sphere method.
 
