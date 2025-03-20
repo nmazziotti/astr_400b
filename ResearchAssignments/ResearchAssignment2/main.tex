@@ -1,0 +1,261 @@
+%% Beginning of file 'sample7.tex'
+%%
+%% Version 7. Created January 2025.  
+%%
+%% AASTeX v7 calls the following external packages:
+%% times, hyperref, ifthen, hyphens, longtable, xcolor, 
+%% bookmarks, array, rotating, ulem, and lineno 
+%%
+%% RevTeX is no longer used in AASTeX v7.
+%%
+\documentclass[twocolumn, linenumbers,trackchanges]{aastex7}
+%%
+%% This initial command takes arguments that can be used to easily modify 
+%% the output of the compiled manuscript. Any combination of arguments can be 
+%% invoked like this:
+%%
+%% \documentclass[argument1,argument2,argument3,...]{aastex7}
+%%
+%% Six of the arguments are typestting options. They are:
+%%
+%%  twocolumn   : two text columns, 10 point font, single spaced article.
+%%                This is the most compact and represent the final published
+%%                derived PDF copy of the accepted manuscript from the publisher
+%%  default     : one text column, 10 point font, single spaced (default).
+%%  manuscript  : one text column, 12 point font, double spaced article.
+%%  preprint    : one text column, 12 point font, single spaced article.  
+%%  preprint2   : two text columns, 12 point font, single spaced article.
+%%  modern      : a stylish, single text column, 12 point font, article with
+%% 		  wider left and right margins. This uses the Daniel
+%% 		  Foreman-Mackey and David Hogg design.
+%%
+%% Note that you can submit to the AAS Journals in any of these 6 styles.
+%%
+%% There are other optional arguments one can invoke to allow other stylistic
+%% actions. The available options are:
+%%
+%%   astrosymb    : Loads Astrosymb font and define \astrocommands. 
+%%   tighten      : Makes baselineskip slightly smaller, only works with 
+%%                  the twocolumn substyle.
+%%   times        : uses times font instead of the default.
+%%   linenumbers  : turn on linenumbering. Note this is mandatory for AAS
+%%                  Journal submissions and revisions.
+%%   trackchanges : Shows added text in bold.
+%%   longauthor   : Do not use the more compressed footnote style (default) for 
+%%                  the author/collaboration/affiliations. Instead print all
+%%                  affiliation information after each name. Creates a much 
+%%                  longer author list but may be desirable for short 
+%%                  author papers.
+%% twocolappendix : make 2 column appendix.
+%%   anonymous    : Do not show the authors, affiliations, acknowledgments,
+%%                  and author contributions for dual anonymous review.
+%%  resetfootnote : Reset footnotes to 1 in the body of the manuscript.
+%%                  Useful when there are a lot of authors and affiliations
+%%		    in the front matter.
+%%   longbib      : Print article titles in the references. This option
+%% 		    is mandatory for PSJ manuscripts.
+%%
+%% Since v6, AASTeX has included \hyperref support. While we have built in 
+%% specific %% defaults into the classfile you can manually override them 
+%% with the \hypersetup command. For example,
+%%
+%% \hypersetup{linkcolor=red,citecolor=green,filecolor=cyan,urlcolor=magenta}
+%%
+%% will change the color of the internal links to red, the links to the
+%% bibliography to green, the file links to cyan, and the external links to
+%% magenta. Additional information on \hyperref options can be found here:
+%% https://www.tug.org/applications/hyperref/manual.html#x1-40003
+%%
+%% The "bookmarks" has been changed to "true" in hyperref
+%% to improve the accessibility of the compiled pdf file.
+%%
+%% If you want to create your own macros, you can do so
+%% using \newcommand. Your macros should appear before
+%% the \begin{document} command.
+%%
+\newcommand{\vdag}{(v)^\dagger}
+\newcommand\aastex{AAS\TeX}
+\newcommand\latex{La\TeX}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% The following section outlines numerous optional output that
+%% can be displayed in the front matter or as running meta-data.
+%%
+%% Running header information. A short title on odd pages and 
+%% short author list on even pages. Note that this
+%% information may be modified in production.
+%%\shorttitle{AASTeX v7 Sample article}
+%%\shortauthors{The Terra Mater collaboration}
+%%
+%% Include dates for submitted, revised, and accepted.
+%%\received{February 1, 2025}
+%%\revised{March 1, 2025}
+%%\accepted{\today}
+%%
+%% Indicate AAS Journal the manuscript was submitted to.
+%%\submitjournal{PSJ}
+%% Note that this command adds "Submitted to " the argument.
+%%
+%% You can add a light gray and diagonal water-mark to the first page 
+%% with this command:
+%% \watermark{text}
+%% where "text", e.g. DRAFT, is the text to appear.  If the text is 
+%% long you can control the water-mark size with:
+%% \setwatermarkfontsize{dimension}
+%% where dimension is any recognized LaTeX dimension, e.g. pt, in, etc.
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%
+%% Use this command to indicate a subdirectory where figures are located.
+%%\graphicspath{{./}{figures/}}
+%% This is the end of the preamble.  Indicate the beginning of the
+%% manuscript itself with \begin{document}.
+
+\begin{document}
+
+\title{Impact of the MW-M31 Merger on the Dark Matter Halo Distribution of M33}
+
+%% A significant change from AASTeX v6+ is in the author blocks. Now an email
+%% address is required for each author. This means that each author requires
+%% at least one of the following:
+%%
+%% \author
+%% \affiliation
+%% \email
+%%
+%% If these three commands are not available for each author, the latex
+%% compiler will issue an error and if you force the latex compiler to continue,
+%% it will generate an incomplete pdf.
+%%
+%% Multiple \affiliation commands are allowed and authors can also include
+%% an optional \altaffiliation to indicate a status, i.e. Hubble Fellow. 
+%% while affiliations are indexed as footnotes, altaffiliations are noted with
+%% with a non-numeric footnote that is set away from the numeric \affiliation 
+%% footnotes. NOTE that if an \altaffiliation command is used it must 
+%% come BEFORE the \affiliation call, right after the \author command, in 
+%% order to place the footnotes in the proper location. Because non-numeric
+%% symbols are used, \altaffiliation should be used sparingly.
+%%
+%% In v7 the \author command takes an optional argument which provides 
+%% additional metadata about the author. Authors can provide the 16 digit 
+%% ORCID, the surname (family or last) name, the given (first or fore-) name, 
+%% and a name suffix, e.g. "Jr.". The syntax is:
+%%
+%% \author[orcid=0000-0002-9072-1121,gname=Gregory,sname=Schwarz]{Greg Schwarz}
+%%
+%% This name metadata in not shown, it is only for parsing by the peer review
+%% system so authors can be more easily identified. This name information will
+%% also be sent to the publisher so they can include it in the CROSSREF 
+%% metadata. Including an orcid will hyperlink the author name to the 
+%% author's ORCID page. Note that  during compilation, LaTeX will do some 
+%% limited checking of the format of the ID to make sure it is valid. If 
+%% the "orcid-ID.png" image file is  present or in the LaTeX pathway, the 
+%% ORCID icon will appear next to the authors name.
+%%
+%% Even though emails are now required for each author, the \email does not
+%% produce output in the compiled manuscript unless the optional "show" command
+%% is used. For example,
+%%
+%% \email[show]{greg.schwarz@aas.org}
+%%
+%% All "shown" emails are show in the bottom left of the first page. Due to
+%% space constraints, only a few emails should be shown. 
+%%
+%% To identify a corresponding author, use the \correspondingauthor command.
+%% The command appends "Corresponding Author: " to the argument it appears at
+%% the bottom left of the first page like the output from \email. 
+
+\author[]{Nicolas Mazziotti}
+\affiliation{University of Arizona}
+\email[]{nmazziotti@arizona.edu}  
+
+
+%% Use the \collaboration command to identify collaborations. This command
+%% takes an optional argument that is either a number or the word "all"
+%% which tells the compiler how many of the authors above the command to
+%% show. For example "\collaboration[all]{(DELVE Collaboration)}" wil include
+%% all the authors above this command.
+%%
+%% Mark off the abstract in the ``abstract'' environment. 
+
+%% Keywords should appear after the \end{abstract} command. 
+%% The AAS Journals now uses Unified Astronomy Thesaurus (UAT) concepts:
+%% https://astrothesaurus.org
+%% You will be asked to selected these concepts during the submission process
+%% but this old "keyword" functionality is maintained in case authors want
+%% to include these concepts in their preprints.
+%%
+%% You can use the \uat command to link your UAT concepts back its source.
+
+%% From the front matter, we move on to the body of the paper.
+%% Sections are demarcated by \section and \subsection, respectively.
+%% Observe the use of the LaTeX \label
+%% command after the \subsection to give a symbolic KEY to the
+%% subsection for cross-referencing in a \ref command.
+%% You can use LaTeX's \ref and \label commands to keep track of
+%% cross-references to sections, equations, tables, and figures.
+%% That way, if you change the order of any elements, LaTeX will
+%% automatically renumber them.
+
+\section{Introduction} 
+The idea of dark matter was first hypothesized by \cite{Zwicky_1933} to explain the enormous velocity dispersion of galaxies in the Coma cluster, far exceeding the dispersion expected from the observed luminous matter. The same conclusion was later reached by \cite{Rubin_1970} to account for the higher than expected rotation speeds in the outskirts of M31, introducing the idea that all galaxies are enveloped by a massive halo of dark matter. The inability to observationally detect dark matter other than through gravitational interactions with luminous matter has led to the conclusion that dark matter particles are extremely cold and weakly-interact with each other. This paradigm forms the basis of the Lambda cold dark matter ($\Lambda$CDM) theory of cosmology, which asserts that dense regions of dark matter in the early universe provided the necessary scaffolding for galaxy formation by pulling in baryonic matter. 
+
+Relating the dark matter halo structure of a galaxy to observable gas and stellar features is essential for understanding the role of dark matter in galaxy evolution and constraining the properties of dark matter particles. Galaxies in the Local Group are ideal candidates to study dark matter halos because of their proximity, especially the halos of likely satellites such as the LMC, SMC, and M33 that would otherwise be too distant to probe. This may lend valuable insight into a longstanding issue in $\Lambda$CDM cosmology: the missing satellites problem, which arises from the fact that fewer satellites have been found in the Local Group than predicted \citep{Kauffmann_1993}. 
+
+\begin{figure}[ht!]
+\plotone{HaloShapes.png}
+\caption{Figure 24 taken from \cite{Garavito-Camargo_2021} displaying the morphology of prolate (left column), oblate (middle column), and triaxial (right column) dark matter halos.
+\label{fig:shapes}. The top row is the x-z projection while the bottom row is x-y.}
+\end{figure}
+
+Efforts to characterize the 3D shape of dark matter halos are largely driven by simulations, from which a common result has been that halos often appear as prolate (elongated along poles), oblate (flattened at poles), or triaxial (see Figure \ref{fig:shapes}). By examining Milky Way sized dark matter halos in the Aquarius cosmological N-body simulations, \cite{Vera-Ciro_2011} found that halo shape measured at the virial radius typically evolved from prolate to a more triaxial/oblate distribution. Narrow filaments of infalling material were found to correlate more with prolate configurations, while isotropic accretion gave rise to triaxial/oblate configurations. However, galaxy interactions may cause significant deviations from these three shapes. In \cite{Garavito-Camargo_2021}, N-body simulations of the LMC passing through the Milky Way showed that asymmetric perturbations were induced in the MW halo that did not fit a prolate, oblate, or triaxial distribution.  
+
+The connection between dark matter subhalos and the missing satellites problem is an area of ongoing research. A thorough exploration into the geometrical evolution of satellite sized halos, as opposed to Milky Way sized halos, has yet to be conducted, though simulations of galaxies in the Local Group have grown significantly in resolution. An interesting candidate is M33, as it is the third largest galaxy in the Local Group and lacks a central bulge common for spiral galaxies. Investigating how the shape of M33's dark matter halo evolves as it orbits M31 and the eventual merger between M31 and the MW could probe the stability of such satellite galaxies. A significant shift in halo configuration could be indicative of a process that might have destabilized many satellites in the early universe.  
+
+\section{Proposal}
+\subsection{This Proposal}
+In this project, I aim to utilize the simulation data provided by \cite{Besla_2012} of the MW-M31-M33 system to characterize the shape of M33's dark matter halo from the present day until $\sim$12 Gyr in the future. I would to like to see if M33's halo at the present day can be described by a prolate, oblate, or triaxial distribution, and if this shape changes at all over time, specifically in response to the M31-MW merger.
+
+\begin{figure}[ht!]
+\plotone{Lab7_M31DMHalo.png}
+\caption{Example density projection (x-y) of the dark matter particles in M31 at Snapshot 0. Contours are overlayed in green. This same plot will be produced in my project for M33. 
+\label{fig:M31dens}}
+\end{figure}
+
+\subsection{Methods} 
+Most of my methods are taken from Lab 7. I plan to use the dark matter particle data of M33 in the simulation (particle type 1) to extract information about M33's halo. First, I will use the \texttt{CenterOfMass} code to calculate the center of mass of M33 according to the dark matter particles at Snapshot 0 (present day). The dark matter particles are used to calculate the COM as opposed to the disk particles because the halo COM will likely differ from the disk particle COM. I can then calculate positions of all of the dark matter particles in the COM frame. These coordinates will be used to make a projected density plot as in Lab 7 using the \texttt{matplotlib} 2D histogram, overlayed with contours using the \texttt{density\_contour} function (see Fig. \ref{fig:M31dens}). This plot should have dense contours like in \ref{fig:shapes} to see the halo shape more clearly. At this stage, I will attempt to classify the halo shape is either prolate, oblate, or triaxial, if possible. I will generate the same plot for every 10 snapshots up through Snapshot 800, $\sim$12 Gyr in the future, and then produce an animated movie from the images with Adobe Photoshop to visually check for any changes in the halo shape. If no changes are observed, I will repeat this same process for a different projection, using the \texttt{RotateFrame} function from Lab 7 if helpful. I will compare the time evolution of the movies to the M31-M33 and MW-M31 orbital plots in Homework 6 to see if any significant changes occur in response to the MW-M31 merger.
+
+
+\subsection{Hypothesis} 
+I hypothesize that the halo distribution of M33 will be more triaxial at the present day because it has not been recently perturbed by M31 or any other object. As the M31-MW merger occurs, I predict that the halo shape of M33 will become more prolate due to the added mass of the Milky Way, elongating M33's halo along the collision axis. I don't think the halo will deviate from a prolate, oblate, or triaxial distribution post-merger because M33 is currently far enough away from M31 and massive enough to not be completely tidally disrupted by the merger. Additionally, dark matter
+does not interact with itself so the halo shape should remain approximately stable despite the introduction of the MW dark matter halo during the merger. 
+
+%% The "ht!" tells LaTeX to put the figure "here" first, at the "top" next
+%% and to override the normal way of calculating a float position.
+%% The asterisk after "figure" tells the compiler to span multiple columns
+%% if a two column style is selected.
+
+
+%% For this sample we use BibTeX plus aasjournalv7.bst to generate the
+%% the bibliography. The sample7.bib file was populated from ADS. To
+%% get the citations to show in the compiled file do the following:
+%%
+%% pdflatex sample7.tex
+%% bibtext sample7
+%% pdflatex sample7.tex
+%% pdflatex sample7.tex
+
+\bibliography{main}{}
+\bibliographystyle{aasjournalv7}
+
+%% This command is needed to show the entire author+affiliation list when
+%% the collaboration and author truncation commands are used.  It has to
+%% go at the end of the manuscript.
+%\allauthors
+
+%% Include this line if you are using the \added, \replaced, \deleted
+%% commands to see a summary list of all changes at the end of the article.
+%\listofchanges
+
+\end{document}
+
+% End of file `sample7.tex'.
