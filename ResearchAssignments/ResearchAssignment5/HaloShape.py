@@ -76,8 +76,18 @@ def RotateFrame(posI,velI):
     return pos, vel
 
 class HaloShape:
+    '''
+    Class that creates projections of M33's dark matter halo particle density and fits ellipses to the measure the halo shape
+    '''
 
     def __init__(self, galaxy, snap):
+        """
+        PARAMETERS:
+            - galaxy (string): Name of galaxy (e.g. 'M33')
+            - snap (int): Desired simulation snapshot from 0 to 799
+        """
+
+        # Directory on nimoy where the high resolution data files are stored
         HighResDir = '../../../../astr400b/HighRes/M33/'
         
         # Determine Filename
@@ -86,14 +96,14 @@ class HaloShape:
         # remove all but the last 3 digits
         ilbl = ilbl[-3:]
         # create filenames
-        self.filename = '%s_'%(galaxy) + ilbl + '.txt'
-        self.filesource = HighResDir + self.filename
+        self.filename = '%s_'%(galaxy) + ilbl + '.txt' # filename without directories 
+        self.filesource = HighResDir + self.filename # filename with directories
 
-        self.snap = snap 
+        self.galaxy = galaxy # Store galaxy name 
+        self.snap = snap  # Store snapshot 
 
         # Create a COM of object for M33 Halo (particle type=1) Using Code from Homework 4
 
-        # Using HighRes version of M33_000.txt 
         COMD = CenterOfMass(self.filesource,1)
 
         self.time = COMD.time
@@ -121,49 +131,79 @@ class HaloShape:
         r = np.array([xD,yD,zD]).T # transposed 
         v = np.array([vxD,vyD,vzD]).T
 
-        # ADD HERE
-        # compute the rotated position and velocity vectors
+        # compute the rotated position and velocity vectors and store as global variables 
         self.rn, self.vn = RotateFrame(r, v)
 
-    def GenerateProjection(self, axis1, axis2):
-        # 1) Make plots 
+    def ComputeR500(self, max_r=100.5):
+        """
+        Method to compute the R500 distance in kpc for the HaloShape object
 
-        # M33 Disk Density 
+        INPUTS:
+            - max_r (int, float): Max radial separation in kpc from galaxy center of mass. Default is 100.5 kpc.
+        """
+
+        # Radial distance range in kpc 
+        r = np.arange(0.25, max_r, 0.25) * u.kpc
+
+        # Create MassProfile object for this galaxy
+        Gal = MassProfile(self.galaxy, self.snap)
+
+        # Compute DM mass enclosed at each radial distance 
+        HaloMass = Gal.massEnclosed(1, r.value)
+
+        # Convert masses into average densities by dividing each mass by a sphere 
+        densities = 3*HaloMass/ (4*np.pi * r**3)
+
+        # Define critical density of the univerese in Msun/kpc^3
+        rho_crit = (9.47e-27 * u.kg/u.m**3).to(u.Msun/u.kpc**3)
+
+        # Find absolute difference between each density and 500 times the critical density 
+        diff = abs(densities - 500 * rho_crit)
+
+        # Find index where the minimum difference is 
+        index = np.where(diff == np.min(diff))[0][0]
+
+        # Set R500 to be the radial distance at this index in kpc
+        r500 = r[index]
+
+        return r500
+
+    def GenerateProjection(self, axis1, axis2):
+        """
+        Method that generates a projection of the DM halo particle density in the rotated coordinate frame. Axes are 
+        labeled as 0 for x, 1 for y, and 2 for z.
+
+        INPUTS:
+            - axis1 (int): Axis to display on the vertical axis 
+            - axis2 (int): Axis to display on the horizontal axis 
+
+        OUTPUTS:
+            - h (2d numpy array): Projected histogram of particle density 
+            - r500 (astropy quantity): R500 for this galaxy in kpc
+        """
+
         fig, ax= plt.subplots(figsize=(12, 10))
-        
-        # ADD HERE
-        # plot the particle density for M33 using a 2D historgram
-        # plt.hist2D(pos1,pos2, bins=, norm=LogNorm(), cmap='' )
-        # cmap options: 
-        # https://matplotlib.org/3.1.0/tutorials/colors/colormaps.html  
-        #   e.g. 'magma', 'viridis'
-        # can modify bin number to make the plot smoother
-        h = plt.hist2d(self.rn[:, axis1], self.rn[:, axis2], range = ((-50, 50), (-50, 50)), bins=75, norm=LogNorm(), cmap='cividis')
+
+        r500 = self.ComputeR500().value # Compute r500 at this snap and use to define box to make projection 
+        h = plt.hist2d(self.rn[:, axis1], self.rn[:, axis2], range = ((-r500, r500), (-r500, r500)), bins=75, norm=LogNorm(), cmap='cividis')
         
         cbar = plt.colorbar()
         cbar.set_label("Number of DM particle per bin", fontsize=15)
         
-        
-        #set axis limits
-        # l = 0.5e3 # length of box to show in kpc
-        # plt.ylim(-l,l)
-        # plt.xlim(-l,l)
         
         #adjust tick label font size
         label_size = 10
         matplotlib.rcParams['xtick.labelsize'] = label_size 
         matplotlib.rcParams['ytick.labelsize'] = label_size
         
-        
-        # Save to a file
-        #plt.savefig('Lab7_M31DMHalo.png', bbox_inches='tight')
+        # Hide figure 
         plt.close(fig)
 
-        return h
+        return h, r500
 
     def PlotEllipses(self, axis1, axis2, sma=10):
         """
-        Function to plot fitted isodensity ellipses over 2D histogram projection of halo particle density 
+        Method to plot fitted isodensity ellipses over 2D histogram projection of halo particle density 
         
         Inputs:
             - img_data (2D numpy array): Output 2D array from plt.hist2d 
@@ -177,7 +217,7 @@ class HaloShape:
         # Need to log10 the density data so that photutils can create ellipses based on a log scale 
         # Will not work without taking the log of the density data 
 
-        hist = self.GenerateProjection(axis1, axis2)
+        hist, r500 = self.GenerateProjection(axis1, axis2)
         img_data = hist[0]
 
         x_binsize = (hist[2][1] - hist[2][0]) # same for all 3 projections
@@ -199,7 +239,7 @@ class HaloShape:
         ellipse = Ellipse(fits_data, geometry)
         
         # Use photutils method fit_image to fit ellipses to the data out to a maximum sma length of 50 pixels 
-        isolist = ellipse.fit_image(maxsma=37.5)
+        isolist = ellipse.fit_image(maxsma=40)
     
         #Useful plot that displays sma versus ellipticity and position angle to quantify the shape 
         fig, ax = plt.subplots(ncols=2, figsize=(10,5))
@@ -207,15 +247,17 @@ class HaloShape:
         ax[0].set_xlabel('Semimajor axis length [kpc]')
         ax[0].set_ylabel('Ellipticity')
         ax[0].set_ylim(0,1)
-        ax[0].axvline(25, c='magenta', linestyle=':', label="M33 Scale Radius")
-        ax[0].axvline(25/2, c='magenta', linestyle='--', label="Half of Scale Radius")
+        ax[0].axvline(r500, c='magenta', linestyle=':', label=r"M33 $R_{500}$")
+        ax[0].axvline(r500/2, c='magenta', linestyle='--', label=r"M33 $R_{500}$/2")
+        ax[0].axvline(r500/4, c='magenta', linestyle='-.', label=r"M33 $R_{500}$/4")
         ax[0].legend()
         
         ax[1].errorbar(isolist.sma*y_binsize, isolist.pa, yerr=isolist.pa_err, fmt='o', markersize=4)
         ax[1].set_xlabel('Semimajor axis length [kpc]')
         ax[1].set_ylabel('Position Angle')
-        ax[1].axvline(25, c='magenta', linestyle=':', label="M33 Scale Radius")
-        ax[1].axvline(25/2, c='magenta', linestyle='--', label="Half of Scale Radius")
+        ax[1].axvline(r500, c='magenta', linestyle=':', label=r"M33 $R_{500}$")
+        ax[1].axvline(r500/2, c='magenta', linestyle='--', label=r"M33 $R_{500}$/2")
+        ax[1].axvline(r500/4, c='magenta', linestyle='-.', label=r"M33 $R_{500}$/4")
         ax[1].legend()
         
         #plt.errorbar(isolist.sma, isolist.pa, yerr=isolist.pa_err, fmt='o', markersize=4)
@@ -239,9 +281,17 @@ class HaloShape:
             isos.append(iso)
             x, y, = iso.sampled_coordinates()
             plt.plot(x, y, color='lime', linewidth=0.5, linestyle='-')
-            
-        for sma in [25/y_binsize, 25/2/y_binsize]:
+
+        r500_eps = []
+        r500_pa = []
+        r500_sma = []
+        
+        for sma in [r500/y_binsize, r500/2/y_binsize, r500/4/y_binsize]:
             iso = isolist.get_closest(sma)
+            r500_eps.append(iso.eps)
+            r500_pa.append(iso.pa)
+            r500_sma.append(iso.sma * y_binsize)
+            
             x, y, = iso.sampled_coordinates()
             plt.plot(x, y, color='magenta', linewidth=1, linestyle='-')
 
@@ -251,5 +301,11 @@ class HaloShape:
         
         plt.savefig(f'./plots/{axis1}{axis2}/projections/' + self.filename[:-4] + '.png', bbox_inches='tight')
         plt.close(fig)
-        return isolist
+
+        r500_eps = np.array(r500_eps)
+        r500_pa = np.array(r500_pa)
+        r500_sma = np.array(r500_sma)
+        r500_smb = r500_sma * np.sqrt(1 - r500_eps)
+        
+        return isolist, r500_eps, r500_pa, r500_sma, r500_smb
             
