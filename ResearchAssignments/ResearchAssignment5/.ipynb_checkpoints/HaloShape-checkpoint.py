@@ -95,6 +95,8 @@ class HaloShape:
 
         # Using HighRes version of M33_000.txt 
         COMD = CenterOfMass(self.filesource,1)
+
+        self.time = COMD.time
         # Compute COM of M33 using halo particles
         COMP = COMD.COM_P(0.1)
         COMV = COMD.COM_V(COMP[0],COMP[1],COMP[2])
@@ -217,7 +219,8 @@ class HaloShape:
         ax[1].legend()
         
         #plt.errorbar(isolist.sma, isolist.pa, yerr=isolist.pa_err, fmt='o', markersize=4)
-        
+
+        plt.title(np.round(self.time, 3))
         plt.savefig(f'./plots/{axis1}{axis2}/ellipses/' + self.filename[:-4] + '.png', bbox_inches='tight')
         plt.close(fig)
         
@@ -241,7 +244,8 @@ class HaloShape:
             iso = isolist.get_closest(sma)
             x, y, = iso.sampled_coordinates()
             plt.plot(x, y, color='magenta', linewidth=1, linestyle='-')
-    
+
+        plt.title(np.round(self.time, 3))
         cbar = plt.colorbar(sm)
         cbar.set_label("Number of DM particle per bin", fontsize=15)
         
