@@ -1,3 +1,5 @@
+# I took this from Lab 13 Solutions to make sure everything is correct
+# Nicolas Mazziotti
 
 # # In Class Lab 13 Solution
 # # Cosmological Tools
@@ -5,7 +7,6 @@
 # In this lab we will build on the Class called `CosmologicalTools` that we developed in earlier labs.
 # 
 # For Lab 13, we will create methods that compute: the temperature evolution of the universe and the sound horizon diameter. 
-# 
 
 
 

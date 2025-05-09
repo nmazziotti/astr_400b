@@ -1,5 +1,6 @@
+# I took this from Homework 5 Solutions to make sure everything is correct
+# Nicolas Mazziotti
 
-# Homework 5 Solutions
 # Mass Profiles
 # G. Besla & H. Foote
 
@@ -17,6 +18,7 @@ import matplotlib
 from ReadFile import Read
 from CenterOfMass import CenterOfMass
 
+# Added this in to use only the high resolution. data 
 HighResDir = '../../../../astr400b/HighRes/'
 
 class MassProfile:
@@ -41,7 +43,7 @@ class MassProfile:
         # remove all but the last 3 digits
         ilbl = ilbl[-3:]
         # create filenames
-        self.filename= HighResDir + '%s/%s_'%(galaxy, galaxy) + ilbl + '.txt'
+        self.filename= HighResDir + '%s/%s_'%(galaxy, galaxy) + ilbl + '.txt' # modified this part as well from the solutions to use HighRes data
         
         # read the particle data                                                                                             
         self.time, self.total, self.data = Read(self.filename)
